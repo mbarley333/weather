@@ -6,8 +6,16 @@ import (
 	"net/http"
 )
 
+type Weather struct {
+	city        string
+	country     string
+	weather     string
+	temperature float64
+}
+
 func Get(location string) ([]byte, error) {
 
+	//get api response
 	resp, err := http.Get(fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=3b814c61996538f2e8a2b921e23bbb0a", location))
 	if err != nil {
 		return nil, fmt.Errorf("Something went wrong.  Please try again later.  %v", err)

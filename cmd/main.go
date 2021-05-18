@@ -1,6 +1,17 @@
 package main
 
+import (
+	"log"
+	"weather"
+)
+
 func main() {
+
+	data, err := weather.Get("Kaneohe")
+	if err != nil {
+		log.Fatal("error")
+	}
+
 	//refactor to call get
 
 	//pass json into something human friendly
