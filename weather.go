@@ -7,10 +7,9 @@ import (
 )
 
 type Weather struct {
-	city        string
-	country     string
-	weather     string
-	temperature float64
+	City        string
+	Country     string
+	Temperature float64
 }
 
 func Get(location string) ([]byte, error) {
@@ -36,4 +35,14 @@ func Get(location string) ([]byte, error) {
 	fmt.Printf("%s", data)
 
 	return data, nil
+}
+
+func Decode(weather []byte) string {
+
+	return ""
+}
+
+func Set(weather []byte) Weather {
+
+	return Weather{}
 }
