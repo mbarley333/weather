@@ -7,11 +7,13 @@ import (
 )
 
 type Weather struct {
-	City        string
-	Country     string
-	Temperature float64
+	City        string  `json:"name"`
+	WeatherMain string  `json:"main"`
+	Humidity    string  `json:"humidity"`
+	Temperature float64 `json:"temp"`
 }
 
+//{"coord":{"lon":-157.8036,"lat":21.4181},"weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04n"}],"base":"stations","main":{"temp":296.14,"feels_like":296.4,"temp_min":295.6,"temp_max":296.92,"pressure":1019,"humidity":73},"visibility":10000,"wind":{"speed":5.66,"deg":80,"gust":8.23},"clouds":{"all":75},"dt":1621494752,"sys":{"type":1,"id":7877,"country":"US","sunrise":1621439481,"sunset":1621487061},"timezone":-36000,"id":5848189,"name":"Kaneohe","cod":200}PASS
 func Get(location string) ([]byte, error) {
 
 	//get api response
@@ -39,9 +41,12 @@ func Get(location string) ([]byte, error) {
 	return data, nil
 }
 
-func Decode(weather []byte) string {
+func Decode(data []byte) (string, error) {
 
-	return ""
+	if len(data) == 0 {
+		return "", fmt.Errorf("empty byte slice")
+	}
+	return string(data), nil
 }
 
 func Set(weather []byte) Weather {
