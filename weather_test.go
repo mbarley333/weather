@@ -1,6 +1,7 @@
 package weather_test
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 	"weather"
@@ -28,50 +29,6 @@ func TestWeatherGet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(data) == 0 {
-		t.Fatal("No data for you")
-	}
+	fmt.Println(data)
 
 }
-
-func TestWeatherDecode(t *testing.T) {
-
-	want := string(response)
-	got, err := weather.Decode(response)
-	if err != nil {
-		t.Errorf("want: %s, got: %s", want, got)
-	}
-}
-
-// func TestWeatherSet(t *testing.T) {
-// 	var want = weather.Weather{
-// 		City:        "Kaneohe",
-// 		Country:     "USA",
-// 		Temperature: 78.0,
-// 	}
-// 	data, err := weather.Get("Kaneohe")
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	got := weather.Set(data)
-// 	if want != got {
-// 		t.Errorf("Weather struct does not match %v %v", want, got)
-// 	}
-
-// }
-
-// func stash() {
-// 	httpmock.RegisterResponder("GET", "https://api.openweathermap.org/data/2.5/weather?q=kaneohe&appid=3b814c61996538f2e8a2b921e23bbb0a",
-// 		func(req *http.Request) (*http.Response, error) {
-// 			resp := httpmock.NewStringResponse(200,
-// 				`{
-// 				"coord":{"lon":-157.8036,"lat":21.4181},"weather":[{"id":801,"main":"Clouds","description":"few clouds","icon":"02d"}],"base":"stations","main":{"temp":298.95,"feels_like":299.18,"temp_min":298.9,"temp_max":300.23,"pressure":1017,"humidity":61},"visibility":10000,"wind":{"speed":7.72,"deg":70},"clouds":{"all":20},"dt":1621471005,"sys":{"type":1,"id":7877,"country":"US","sunrise":1621439481,"sunset":1621487061},"timezone":-36000,"id":5848189,"name":"Kaneohe","cod":200
-// 			}
-// 			`,
-// 			)
-
-// 			resp.Header.Add("Content-Type", "application/json")
-// 			return resp, nil
-// 		},
-// 	)
-// }
