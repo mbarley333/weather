@@ -30,5 +30,18 @@ func TestWeatherGet(t *testing.T) {
 		t.Fatal(err)
 	}
 	fmt.Println(data)
+}
 
+func TestWeatherSetApiURL(t *testing.T) {
+	location := "Kaneohe"
+
+	url, err := weather.SetApiURL(location)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "https://api.openweathermap.org/data/2.5/weather?q=Kaneohe&appid=3b814c61996538f2e8a2b921e23bbb0a"
+	got := url
+	if want != got {
+		t.Errorf("\r\nwanted: %s\r\n, \r\ngot: %s", want, got)
+	}
 }

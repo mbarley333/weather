@@ -12,26 +12,14 @@ func main() {
 		log.Fatal("error")
 	}
 
-	//refactor to call get
+	//refactor to call get -- done
 
-	//pass json into something human friendly
+	//pass json into something human friendly -- done
 
-	//struct summary clouds, temp
+	//struct summary clouds, temp -- done
 
-	//unit tests for offline testing
+	//unit tests for offline testing -- done
 
 	//url config to point to local http listen
-
-	//fake api
-
-	//given location, construct the weathermap url
-
-	//pass json into go struct
-
-	//unit test ^^^
-
-	//construct url
-
-	//decode json
 
 }

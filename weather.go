@@ -23,6 +23,12 @@ type weatherResponse struct {
 	} `json:"coord"`
 }
 
+type ApiURL struct {
+	Base     string
+	Location string
+	ApiKey   string
+}
+
 func Get(location string) (weatherResponse, error) {
 
 	//get api response
@@ -48,4 +54,20 @@ func Get(location string) (weatherResponse, error) {
 	}
 
 	return wdata, nil
+}
+
+func SetApiURL(location string) (string, error) {
+
+	if len(location) == 0 {
+		return "", fmt.Errorf("something went wrong.  Please provide location")
+	}
+
+	var aData ApiURL
+
+	aData.Base = "https://api.openweathermap.org/data/2.5/weather?q="
+	aData.Location = location
+	aData.ApiKey = "&appid=3b814c61996538f2e8a2b921e23bbb0a"
+
+	return aData.Base + aData.Location + aData.ApiKey, nil
+
 }
