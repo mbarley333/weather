@@ -22,12 +22,17 @@ func TestWeatherGet(t *testing.T) {
 	}
 	location := "Kaneohe"
 
-	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", location, api)
+	url, err := weather.SetApiURL(location, api)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	//url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", location, api)
 	fmt.Println(url)
 
 	httpmock.RegisterResponder("GET", url, httpmock.NewBytesResponder(http.StatusOK, response))
 
-	data, err := weather.Get(location)
+	data, err := weather.Get(url)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -42,7 +47,7 @@ func TestWeatherSetApiURL(t *testing.T) {
 
 	location := "Kaneohe"
 
-	url, err := weather.SetApiURL(location)
+	url, err := weather.SetApiURL(location, api)
 	if err != nil {
 		t.Fatal(err)
 	}

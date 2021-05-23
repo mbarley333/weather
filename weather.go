@@ -31,15 +31,9 @@ type ApiURL struct {
 	ApiKey   string
 }
 
-func Get(location string) (weatherResponse, error) {
+func Get(url string) (weatherResponse, error) {
 
-	api, err := GetWeatherAPIKey("../secret/weather.txt")
-	if err != nil {
-		return weatherResponse{}, fmt.Errorf("something went wrong getting api key.  Please try again later.  %v", err)
-	}
-
-	//get api response
-	resp, err := http.Get(fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", location, api))
+	resp, err := http.Get(url)
 
 	if err != nil {
 		return weatherResponse{}, fmt.Errorf("something went wrong.  Please try again later.  %v", err)
@@ -63,22 +57,17 @@ func Get(location string) (weatherResponse, error) {
 	return wdata, nil
 }
 
-func SetApiURL(location string) (string, error) {
+func SetApiURL(location string, apiKey string) (string, error) {
 
 	if len(location) == 0 {
 		return "", fmt.Errorf("something went wrong.  Please provide location")
-	}
-
-	api, err := GetWeatherAPIKey("../secret/weather.txt")
-	if err != nil {
-		log.Fatal(err)
 	}
 
 	var aData ApiURL
 
 	aData.Base = "https://api.openweathermap.org/data/2.5/weather?q="
 	aData.Location = location
-	aData.ApiKey = fmt.Sprintf("&appid=%s", api)
+	aData.ApiKey = fmt.Sprintf("&appid=%s", apiKey)
 
 	return aData.Base + aData.Location + aData.ApiKey, nil
 
