@@ -16,15 +16,17 @@ func TestWeatherGet(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.openweathermap.org/data/2.5/weather?q=Kaneohe&appid=3b814c61996538f2e8a2b921e23bbb0a",
-		func(req *http.Request) (*http.Response, error) {
-			resp := httpmock.NewBytesResponse(200, response)
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	api, err := weather.GetWeatherAPIKey("../secret/weather.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
 	location := "Kaneohe"
+
+	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", location, api)
+	fmt.Println(url)
+
+	httpmock.RegisterResponder("GET", url, httpmock.NewBytesResponder(http.StatusOK, response))
+
 	data, err := weather.Get(location)
 	if err != nil {
 		t.Fatal(err)
@@ -33,15 +35,30 @@ func TestWeatherGet(t *testing.T) {
 }
 
 func TestWeatherSetApiURL(t *testing.T) {
+	api, err := weather.GetWeatherAPIKey("../secret/weather.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	location := "Kaneohe"
 
 	url, err := weather.SetApiURL(location)
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://api.openweathermap.org/data/2.5/weather?q=Kaneohe&appid=3b814c61996538f2e8a2b921e23bbb0a"
+	want := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", location, api)
 	got := url
 	if want != got {
 		t.Errorf("\r\nwanted: %s\r\n, \r\ngot: %s", want, got)
 	}
+}
+
+func TestGetWeatherAPIKey(t *testing.T) {
+	path := "../secret/weather.txt"
+	got, err := weather.GetWeatherAPIKey(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(got)
+
 }
