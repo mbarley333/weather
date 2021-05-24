@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-type weatherResponse struct {
+type WeatherResponse struct {
 	Weather []struct {
 		Main        string `json:"main"`
 		Description string `json:"description"`
@@ -23,6 +23,12 @@ type weatherResponse struct {
 		Longitude float64 `json:"lon"`
 		Latitude  float64 `json:"lat"`
 	} `json:"coord"`
+	TempF float64
+	TempC float64
+}
+
+type Weather struct {
+	TempF float64
 }
 
 type ApiURL struct {
@@ -31,24 +37,25 @@ type ApiURL struct {
 	ApiKey   string
 }
 
-func Get(url string) (weatherResponse, error) {
+func Get(url string) (WeatherResponse, error) {
 
 	resp, err := http.Get(url)
 
 	if err != nil {
-		return weatherResponse{}, fmt.Errorf("something went wrong.  Please try again later.  %v", err)
+		return WeatherResponse{}, fmt.Errorf("something went wrong.  Please try again later.  %v", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return weatherResponse{}, fmt.Errorf("unexpected status code.  %v", resp.StatusCode)
+		return WeatherResponse{}, fmt.Errorf("unexpected status code.  %v", resp.StatusCode)
 	}
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return weatherResponse{}, fmt.Errorf("something went wrong.  Please try again later.  %v", err)
+		return WeatherResponse{}, fmt.Errorf("something went wrong.  Please try again later.  %v", err)
 	}
 
-	var wdata weatherResponse
+	fmt.Printf("%s", data)
+	var wdata WeatherResponse
 	err = json.Unmarshal(data, &wdata)
 	if err != nil {
 		log.Fatal("unable to unmarshall data")
@@ -83,3 +90,14 @@ func GetWeatherAPIKey(filepath string) (string, error) {
 
 	return str, nil
 }
+
+func (w *WeatherResponse) SetTempF(t float64) {
+
+	w.TempF = (t-273.15)*9/5 + 32
+
+}
+
+// func (w *WeatherResponse) SetTemp() (WeatherResponse, error) {
+
+// 	return WeatherResponse{}, nil
+// }
