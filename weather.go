@@ -27,10 +27,6 @@ type WeatherResponse struct {
 	TempC float64
 }
 
-type Weather struct {
-	TempF float64
-}
-
 type ApiURL struct {
 	Base     string
 	Location string
@@ -91,13 +87,8 @@ func GetWeatherAPIKey(filepath string) (string, error) {
 	return str, nil
 }
 
-func (w *WeatherResponse) SetTempF(t float64) {
-
+func (w *WeatherResponse) SetTemp(t float64) {
 	w.TempF = (t-273.15)*9/5 + 32
+	w.TempC = t - 273.15
 
 }
-
-// func (w *WeatherResponse) SetTemp() (WeatherResponse, error) {
-
-// 	return WeatherResponse{}, nil
-// }
