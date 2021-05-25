@@ -27,6 +27,8 @@ type WeatherResponse struct {
 	TempC float64
 }
 
+type Catalog map[string]WeatherResponse
+
 type ApiURL struct {
 	Base     string
 	Location string
