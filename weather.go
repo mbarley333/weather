@@ -43,8 +43,6 @@ type ApiURL struct {
 
 func Get(url string) (Weather, error) {
 
-	fmt.Println(url)
-
 	resp, err := http.Get(url)
 
 	if err != nil {
@@ -60,7 +58,6 @@ func Get(url string) (Weather, error) {
 		return Weather{}, fmt.Errorf("something went wrong.  Please try again later.  %v", err)
 	}
 
-	fmt.Printf("%s", data)
 	var wdata WeatherResponse
 	err = json.Unmarshal(data, &wdata)
 	if err != nil {

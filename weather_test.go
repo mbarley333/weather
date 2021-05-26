@@ -72,11 +72,10 @@ func TestWeatherSetApiURL(t *testing.T) {
 
 func TestGetWeatherAPIKey(t *testing.T) {
 
-	key, err := weather.GetWeatherAPIKey("WEATHERAPI")
+	_, err := weather.GetWeatherAPIKey("WEATHERAPI")
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Println(key)
 
 }
 
@@ -102,7 +101,5 @@ func TestConvertTempF(t *testing.T) {
 	if !cmp.Equal(want, got, cmpopts.IgnoreUnexported(weather.WeatherResponse{})) {
 		t.Error(cmp.Diff(want, got))
 	}
-
-	fmt.Println(w)
 
 }
