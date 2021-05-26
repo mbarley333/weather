@@ -17,7 +17,7 @@ var response = []byte{123, 34, 99, 111, 111, 114, 100, 34, 58, 123, 34, 108, 111
 
 func TestWeatherGet(t *testing.T) {
 
-	api, err := weather.GetWeatherAPIKey("../secret/weather.txt")
+	api, err := weather.GetWeatherAPIKey("WEATHERAPI")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,7 +51,7 @@ func TestWeatherGet(t *testing.T) {
 }
 
 func TestWeatherSetApiURL(t *testing.T) {
-	api, err := weather.GetWeatherAPIKey("../secret/weather.txt")
+	api, err := weather.GetWeatherAPIKey("WEATHERAPI")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,11 +70,12 @@ func TestWeatherSetApiURL(t *testing.T) {
 }
 
 func TestGetWeatherAPIKey(t *testing.T) {
-	path := "../secret/weather.txt"
-	_, err := weather.GetWeatherAPIKey(path)
+
+	key, err := weather.GetWeatherAPIKey("WEATHERAPI")
 	if err != nil {
 		t.Fatal(err)
 	}
+	fmt.Println(key)
 
 }
 

@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
+	"os"
 )
 
 type WeatherResponse struct {
@@ -78,15 +77,12 @@ func SetApiURL(location string, apiKey string) (string, error) {
 
 }
 
-func GetWeatherAPIKey(filepath string) (string, error) {
+func GetWeatherAPIKey(env string) (string, error) {
 
-	b, err := ioutil.ReadFile(filepath) // just pass the file name
-	if err != nil {
-		fmt.Print(err)
+	if len(os.Getenv(env)) == 0 {
+		return "", fmt.Errorf("%s value not set", env)
 	}
-	str := strings.TrimSuffix(string(b), "\n")
-
-	return str, nil
+	return os.Getenv(env), nil
 }
 
 func (w *WeatherResponse) SetTemp(t float64) {
