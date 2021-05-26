@@ -19,14 +19,21 @@ type WeatherResponse struct {
 	} `json:"main"`
 	City  string `json:"name"`
 	Coord struct {
-		Longitude float64 `json:"lon"`
 		Latitude  float64 `json:"lat"`
+		Longitude float64 `json:"lon"`
 	} `json:"coord"`
-	TempF float64
-	TempC float64
 }
 
-type Catalog map[string]WeatherResponse
+type Weather struct {
+	Main        string
+	Description string
+	TempK       float64
+	TempF       float64
+	TempC       float64
+	City        string
+	Latitude    float64
+	Longitude   float64
+}
 
 type ApiURL struct {
 	Base     string
@@ -34,21 +41,23 @@ type ApiURL struct {
 	ApiKey   string
 }
 
-func Get(url string) (WeatherResponse, error) {
+func Get(url string) (Weather, error) {
+
+	fmt.Println(url)
 
 	resp, err := http.Get(url)
 
 	if err != nil {
-		return WeatherResponse{}, fmt.Errorf("something went wrong.  Please try again later.  %v", err)
+		return Weather{}, fmt.Errorf("something went wrong.  Please try again later.  %v", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return WeatherResponse{}, fmt.Errorf("unexpected status code.  %v", resp.StatusCode)
+		return Weather{}, fmt.Errorf("unexpected status code.  %v", resp.StatusCode)
 	}
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return WeatherResponse{}, fmt.Errorf("something went wrong.  Please try again later.  %v", err)
+		return Weather{}, fmt.Errorf("something went wrong.  Please try again later.  %v", err)
 	}
 
 	fmt.Printf("%s", data)
@@ -58,7 +67,16 @@ func Get(url string) (WeatherResponse, error) {
 		log.Fatal("unable to unmarshall data")
 	}
 
-	return wdata, nil
+	var w Weather
+
+	w.Main = wdata.Weather[0].Main
+	w.Description = wdata.Weather[0].Description
+	w.TempK = wdata.Main.Temp
+	w.City = wdata.City
+	w.Latitude = wdata.Coord.Latitude
+	w.Longitude = wdata.Coord.Longitude
+
+	return w, nil
 }
 
 func SetApiURL(location string, apiKey string) (string, error) {
@@ -79,13 +97,16 @@ func SetApiURL(location string, apiKey string) (string, error) {
 
 func GetWeatherAPIKey(env string) (string, error) {
 
-	if len(os.Getenv(env)) == 0 {
+	apikey := os.Getenv(env)
+
+	if len(apikey) < 1 {
 		return "", fmt.Errorf("%s value not set", env)
 	}
-	return os.Getenv(env), nil
+	return apikey, nil
 }
 
-func (w *WeatherResponse) SetTemp(t float64) {
+func (w *Weather) SetTemp(t float64) {
+
 	w.TempF = (t-273.15)*9/5 + 32
 	w.TempC = t - 273.15
 

@@ -1,9 +1,7 @@
 package weather_test
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"testing"
 	"weather"
@@ -28,10 +26,13 @@ func TestWeatherGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var want weather.WeatherResponse
-	err = json.Unmarshal(response, &want)
-	if err != nil {
-		log.Fatal("unable to unmarshall data")
+	want := weather.Weather{
+		Main:        "Clouds",
+		Description: "broken clouds",
+		TempK:       296.14,
+		City:        "Kaneohe",
+		Latitude:    21.4181,
+		Longitude:   -157.8036,
 	}
 
 	httpmock.Activate()
@@ -81,15 +82,14 @@ func TestGetWeatherAPIKey(t *testing.T) {
 
 func TestConvertTempF(t *testing.T) {
 
-	var w weather.WeatherResponse
-	err := json.Unmarshal(response, &w)
-	if err != nil {
-		log.Fatal("unable to unmarshall data")
+	w := weather.Weather{
+
+		TempK: 296.14,
 	}
 
 	want := 73.38200000000002
 
-	w.SetTemp(w.Main.Temp)
+	w.SetTemp(w.TempK)
 	got := w.TempF
 
 	if !cmp.Equal(want, got, cmpopts.IgnoreUnexported(weather.WeatherResponse{})) {
