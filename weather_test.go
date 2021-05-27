@@ -15,24 +15,24 @@ var response = []byte{123, 34, 99, 111, 111, 114, 100, 34, 58, 123, 34, 108, 111
 
 func TestWeatherGet(t *testing.T) {
 
-	api, err := weather.GetWeatherAPIKey("WEATHERAPI")
+	apiKey, err := weather.GetWeatherAPIKey("WEATHERAPI")
 	if err != nil {
 		t.Fatal(err)
 	}
-	location := "Kaneohe"
 
-	url, err := weather.SetApiURL(location, api)
+	client, err := weather.NewClient(apiKey)
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	location := "Kaneohe"
+	url := client.Base + location + client.ApiKey
 
 	want := weather.Weather{
 		Main:        "Clouds",
 		Description: "broken clouds",
 		TempK:       296.14,
 		City:        "Kaneohe",
-		Latitude:    21.4181,
-		Longitude:   -157.8036,
 	}
 
 	httpmock.Activate()
@@ -40,7 +40,7 @@ func TestWeatherGet(t *testing.T) {
 
 	httpmock.RegisterResponder("GET", url, httpmock.NewBytesResponder(http.StatusOK, response))
 
-	got, err := weather.Get(url)
+	got, err := client.Get(location)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -49,25 +49,6 @@ func TestWeatherGet(t *testing.T) {
 		t.Error(cmp.Diff(want, got))
 	}
 
-}
-
-func TestWeatherSetApiURL(t *testing.T) {
-	api, err := weather.GetWeatherAPIKey("WEATHERAPI")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	location := "Kaneohe"
-
-	url, err := weather.SetApiURL(location, api)
-	if err != nil {
-		t.Fatal(err)
-	}
-	want := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", location, api)
-	got := url
-	if want != got {
-		t.Errorf("\r\nwanted: %s\r\n, \r\ngot: %s", want, got)
-	}
 }
 
 func TestGetWeatherAPIKey(t *testing.T) {
@@ -82,7 +63,6 @@ func TestGetWeatherAPIKey(t *testing.T) {
 func TestConvertTempF(t *testing.T) {
 
 	w := weather.Weather{
-
 		TempK: 296.14,
 	}
 
@@ -101,5 +81,20 @@ func TestConvertTempF(t *testing.T) {
 	if !cmp.Equal(want, got, cmpopts.IgnoreUnexported(weather.WeatherResponse{})) {
 		t.Error(cmp.Diff(want, got))
 	}
+
+}
+
+func TestNewClient(t *testing.T) {
+
+	apiKey, err := weather.GetWeatherAPIKey("WEATHERAPI")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	client, err := weather.NewClient(apiKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(client)
 
 }

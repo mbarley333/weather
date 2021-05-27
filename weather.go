@@ -17,11 +17,7 @@ type WeatherResponse struct {
 	Main struct {
 		Temp float64 `json:"temp"`
 	} `json:"main"`
-	City  string `json:"name"`
-	Coord struct {
-		Latitude  float64 `json:"lat"`
-		Longitude float64 `json:"lon"`
-	} `json:"coord"`
+	City string `json:"name"`
 }
 
 type Weather struct {
@@ -31,19 +27,19 @@ type Weather struct {
 	TempF       float64
 	TempC       float64
 	City        string
-	Latitude    float64
-	Longitude   float64
 }
 
-type ApiURL struct {
-	Base     string
-	Location string
-	ApiKey   string
+type Client struct {
+	Base       string
+	ApiKey     string
+	HTTPClient *http.Client
 }
 
-func Get(url string) (Weather, error) {
+func (c Client) Get(location string) (Weather, error) {
 
-	resp, err := http.Get(url)
+	url := fmt.Sprintf("%s%s%s", c.Base, location, c.ApiKey)
+
+	resp, err := c.HTTPClient.Get(url)
 
 	if err != nil {
 		return Weather{}, fmt.Errorf("something went wrong.  Please try again later.  %v", err)
@@ -70,25 +66,21 @@ func Get(url string) (Weather, error) {
 	w.Description = wdata.Weather[0].Description
 	w.TempK = wdata.Main.Temp
 	w.City = wdata.City
-	w.Latitude = wdata.Coord.Latitude
-	w.Longitude = wdata.Coord.Longitude
+
+	w.SetTemp(wdata.Main.Temp)
 
 	return w, nil
 }
 
-func SetApiURL(location string, apiKey string) (string, error) {
+func NewClient(apiKey string) (Client, error) {
 
-	if len(location) == 0 {
-		return "", fmt.Errorf("something went wrong.  Please provide location")
-	}
+	var c Client
 
-	var aData ApiURL
+	c.Base = "https://api.openweathermap.org/data/2.5/weather?q="
+	c.ApiKey = fmt.Sprintf("&appid=%s", apiKey)
+	c.HTTPClient = &http.Client{}
 
-	aData.Base = "https://api.openweathermap.org/data/2.5/weather?q="
-	aData.Location = location
-	aData.ApiKey = fmt.Sprintf("&appid=%s", apiKey)
-
-	return aData.Base + aData.Location + aData.ApiKey, nil
+	return c, nil
 
 }
 
