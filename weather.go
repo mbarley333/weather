@@ -23,21 +23,20 @@ type WeatherResponse struct {
 type Weather struct {
 	Main        string
 	Description string
-	TempK       float64
-	TempF       float64
-	TempC       float64
+	Temp        float64
 	City        string
 }
 
 type Client struct {
 	Base       string
+	Units      string
 	ApiKey     string
 	HTTPClient *http.Client
 }
 
 func (c Client) Get(location string) (Weather, error) {
 
-	url := fmt.Sprintf("%s%s%s", c.Base, location, c.ApiKey)
+	url := fmt.Sprintf("%s%s%s%s", c.Base, location, c.Units, c.ApiKey)
 
 	resp, err := c.HTTPClient.Get(url)
 
@@ -64,17 +63,21 @@ func (c Client) Get(location string) (Weather, error) {
 
 	w.Main = wdata.Weather[0].Main
 	w.Description = wdata.Weather[0].Description
-	w.TempK = wdata.Main.Temp
+	w.Temp = wdata.Main.Temp
 	w.City = wdata.City
 
-	w.SetTemp(wdata.Main.Temp)
+	//w.SetTemp(wdata.Main.Temp)
 
 	return w, nil
 }
 
-func NewClient(apiKey string) (Client, error) {
+func NewClient(apiKey string, tempunits string) (Client, error) {
 
 	var c Client
+
+	if tempunits == "metric" || tempunits == "imperial" {
+		c.Units = "&units=" + tempunits
+	}
 
 	c.Base = "https://api.openweathermap.org/data/2.5/weather?q="
 	c.ApiKey = fmt.Sprintf("&appid=%s", apiKey)
@@ -94,9 +97,9 @@ func GetWeatherAPIKey(env string) (string, error) {
 	return apikey, nil
 }
 
-func (w *Weather) SetTemp(t float64) {
+// func (w *Weather) SetTemp(t float64) {
 
-	w.TempF = (t-273.15)*9/5 + 32
-	w.TempC = t - 273.15
+// 	w.TempF = (t-273.15)*9/5 + 32
+// 	w.TempC = t - 273.15
 
-}
+// }
