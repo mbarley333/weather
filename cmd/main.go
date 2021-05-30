@@ -9,18 +9,22 @@ import (
 
 func main() {
 
+	//flags package
+	locationPtr := flag.String("location", "Kaneohe", "location name for weather (e.g. Kaneohe")
+
+	//could be friendlier unit names
+	tempUnitsPtr := flag.String("units", "imperial", "temparature units of measurement")
+
+	flag.Parse()
 	apiKey, err := weather.GetWeatherAPIKey("WEATHERAPI")
 	if err != nil {
 		log.Fatal("Unable to get API key")
 	}
-	client, err := weather.NewClient(apiKey)
+
+	client, err := weather.NewClient(apiKey, *tempUnitsPtr)
 	if err != nil {
 		log.Fatal("Something went wrong")
 	}
-	//flags package
-	locationPtr := flag.String("location", "foo", "a string")
-
-	flag.Parse()
 
 	weather, err := client.Get(*locationPtr)
 	if err != nil {

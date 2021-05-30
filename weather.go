@@ -96,10 +96,3 @@ func GetWeatherAPIKey(env string) (string, error) {
 	}
 	return apikey, nil
 }
-
-// func (w *Weather) SetTemp(t float64) {
-
-// 	w.TempF = (t-273.15)*9/5 + 32
-// 	w.TempC = t - 273.15
-
-// }
