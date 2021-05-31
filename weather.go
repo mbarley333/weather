@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 type WeatherResponse struct {
@@ -81,7 +82,7 @@ func NewClient(apiKey string, tempunits string) (Client, error) {
 
 	c.Base = "https://api.openweathermap.org/data/2.5/weather?q="
 	c.ApiKey = fmt.Sprintf("&appid=%s", apiKey)
-	c.HTTPClient = &http.Client{}
+	c.HTTPClient = &http.Client{Timeout: 10 * time.Second}
 
 	return c, nil
 
