@@ -39,6 +39,7 @@ func (c Client) Get(location string) (Weather, error) {
 
 	url := fmt.Sprintf("%s%s%s%s", c.Base, location, c.Units, c.ApiKey)
 
+	//use Client since we override default HTTPClient settings -- timeout
 	resp, err := c.HTTPClient.Get(url)
 
 	if err != nil {
@@ -76,12 +77,13 @@ func NewClient(apiKey string, tempunits string) (Client, error) {
 
 	var c Client
 
-	if tempunits == "metric" || tempunits == "imperial" {
+	if tempunits == "metric" || tempunits == "imperial" || tempunits == "standard" {
 		c.Units = "&units=" + tempunits
 	}
 
 	c.Base = "https://api.openweathermap.org/data/2.5/weather?q="
 	c.ApiKey = fmt.Sprintf("&appid=%s", apiKey)
+	//override default timeout settings
 	c.HTTPClient = &http.Client{Timeout: 10 * time.Second}
 
 	return c, nil
