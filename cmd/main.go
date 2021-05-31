@@ -41,6 +41,10 @@ func main() {
 
 	//unit tests for offline testing -- done
 
-	//url config to point to local http listen
+	//url config to point to local http listen -- done
+
+	//how would you build open weather map api?
+
+	//now that i can get a response can i pass this to a ui?
 
 }
