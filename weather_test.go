@@ -18,6 +18,7 @@ func TestWeatherGet(t *testing.T) {
 	tempUnits := "imperial"
 	location := "Kaneohe"
 
+	//setup http server for get requests
 	ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		f, err := os.Open("testdata/weather_test.json")
 		if err != nil {
@@ -29,13 +30,16 @@ func TestWeatherGet(t *testing.T) {
 
 	}))
 
+	//create new client based on struct
 	client, err := weather.NewClient(apiKey, tempUnits)
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	//set base url to test server url
 	client.Base = ts.URL
 
-	//fake client
+	//set HTTPClient to test client to handle x509 certs w/o more setup work
 	client.HTTPClient = ts.Client()
 	got, err := client.Get(location)
 	if err != nil {
