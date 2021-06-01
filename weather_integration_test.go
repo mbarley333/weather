@@ -7,6 +7,8 @@ import (
 	"weather"
 )
 
+// used to test against actual open weather map api
+// initiated by go test -tags=integration
 func TestWeatherGetIntegration(t *testing.T) {
 	apiKey, err := weather.GetWeatherAPIKey("WEATHERAPI")
 	if err != nil {

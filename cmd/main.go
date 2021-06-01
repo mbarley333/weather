@@ -7,6 +7,7 @@ import (
 	"weather"
 )
 
+// used by cli (e.g. ./cmd -location Kaneohe -units imperial)
 func main() {
 
 	//flags package
