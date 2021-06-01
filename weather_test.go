@@ -1,60 +1,55 @@
 package weather_test
 
 import (
-	"fmt"
+	"io"
 	"net/http"
+	"net/http/httptest"
+	"os"
 	"testing"
+	"time"
 	"weather"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/jarcoal/httpmock"
 )
-
-// response1 is used for api queries with location, units and api key
-var response1 = []byte{123, 34, 99, 111, 111, 114, 100, 34, 58, 123, 34, 108, 111, 110, 34, 58, 45, 49, 53, 55, 46, 56, 48, 51, 54, 44, 34, 108, 97, 116, 34, 58, 50, 49, 46, 52, 49, 56, 49, 125, 44, 34, 119, 101, 97, 116, 104, 101, 114, 34, 58, 91, 123, 34, 105, 100, 34, 58, 56, 48, 50, 44, 34, 109, 97, 105, 110, 34, 58, 34, 67, 108, 111, 117, 100, 115, 34, 44, 34, 100, 101, 115, 99, 114, 105, 112, 116, 105, 111, 110, 34, 58, 34, 115, 99, 97, 116, 116, 101, 114, 101, 100, 32, 99, 108, 111, 117, 100, 115, 34, 44, 34, 105, 99, 111, 110, 34, 58, 34, 48, 51, 110, 34, 125, 93, 44, 34, 98, 97, 115, 101, 34, 58, 34, 115, 116, 97, 116, 105, 111, 110, 115, 34, 44, 34, 109, 97, 105, 110, 34, 58, 123, 34, 116, 101, 109, 112, 34, 58, 55, 54, 46, 51, 50, 44, 34, 102, 101, 101, 108, 115, 95, 108, 105, 107, 101, 34, 58, 55, 54, 46, 56, 57, 44, 34, 116, 101, 109, 112, 95, 109, 105, 110, 34, 58, 55, 52, 46, 54, 56, 44, 34, 116, 101, 109, 112, 95, 109, 97, 120, 34, 58, 55, 57, 46, 54, 51, 44, 34, 112, 114, 101, 115, 115, 117, 114, 101, 34, 58, 49, 48, 49, 56, 44, 34, 104, 117, 109, 105, 100, 105, 116, 121, 34, 58, 54, 57, 125, 44, 34, 118, 105, 115, 105, 98, 105, 108, 105, 116, 121, 34, 58, 49, 48, 48, 48, 48, 44, 34, 119, 105, 110, 100, 34, 58, 123, 34, 115, 112, 101, 101, 100, 34, 58, 52, 46, 54, 49, 44, 34, 100, 101, 103, 34, 58, 57, 48, 125, 44, 34, 99, 108, 111, 117, 100, 115, 34, 58, 123, 34, 97, 108, 108, 34, 58, 52, 48, 125, 44, 34, 100, 116, 34, 58, 49, 54, 50, 50, 49, 56, 50, 57, 56, 55, 44, 34, 115, 121, 115, 34, 58, 123, 34, 116, 121, 112, 101, 34, 58, 49, 44, 34, 105, 100, 34, 58, 55, 56, 55, 55, 44, 34, 99, 111, 117, 110, 116, 114, 121, 34, 58, 34, 85, 83, 34, 44, 34, 115, 117, 110, 114, 105, 115, 101, 34, 58, 49, 54, 50, 50, 49, 51, 48, 53, 54, 49, 44, 34, 115, 117, 110, 115, 101, 116, 34, 58, 49, 54, 50, 50, 49, 55, 56, 52, 55, 50, 125, 44, 34, 116, 105, 109, 101, 122, 111, 110, 101, 34, 58, 45, 51, 54, 48, 48, 48, 44, 34, 105, 100, 34, 58, 53, 56, 52, 56, 49, 56, 57, 44, 34, 110, 97, 109, 101, 34, 58, 34, 75, 97, 110, 101, 111, 104, 101, 34, 44, 34, 99, 111, 100, 34, 58, 50, 48, 48, 125}
-
-// response1 is used for api queries with location and api key
-var response2 = []byte{123, 34, 99, 111, 111, 114, 100, 34, 58, 123, 34, 108, 111, 110, 34, 58, 45, 49, 53, 55, 46, 56, 48, 51, 54, 44, 34, 108, 97, 116, 34, 58, 50, 49, 46, 52, 49, 56, 49, 125, 44, 34, 119, 101, 97, 116, 104, 101, 114, 34, 58, 91, 123, 34, 105, 100, 34, 58, 56, 48, 51, 44, 34, 109, 97, 105, 110, 34, 58, 34, 67, 108, 111, 117, 100, 115, 34, 44, 34, 100, 101, 115, 99, 114, 105, 112, 116, 105, 111, 110, 34, 58, 34, 98, 114, 111, 107, 101, 110, 32, 99, 108, 111, 117, 100, 115, 34, 44, 34, 105, 99, 111, 110, 34, 58, 34, 48, 52, 110, 34, 125, 93, 44, 34, 98, 97, 115, 101, 34, 58, 34, 115, 116, 97, 116, 105, 111, 110, 115, 34, 44, 34, 109, 97, 105, 110, 34, 58, 123, 34, 116, 101, 109, 112, 34, 58, 50, 57, 54, 46, 49, 52, 44, 34, 102, 101, 101, 108, 115, 95, 108, 105, 107, 101, 34, 58, 50, 57, 54, 46, 52, 44, 34, 116, 101, 109, 112, 95, 109, 105, 110, 34, 58, 50, 57, 53, 46, 54, 44, 34, 116, 101, 109, 112, 95, 109, 97, 120, 34, 58, 50, 57, 54, 46, 57, 50, 44, 34, 112, 114, 101, 115, 115, 117, 114, 101, 34, 58, 49, 48, 49, 57, 44, 34, 104, 117, 109, 105, 100, 105, 116, 121, 34, 58, 55, 51, 125, 44, 34, 118, 105, 115, 105, 98, 105, 108, 105, 116, 121, 34, 58, 49, 48, 48, 48, 48, 44, 34, 119, 105, 110, 100, 34, 58, 123, 34, 115, 112, 101, 101, 100, 34, 58, 53, 46, 54, 54, 44, 34, 100, 101, 103, 34, 58, 56, 48, 44, 34, 103, 117, 115, 116, 34, 58, 56, 46, 50, 51, 125, 44, 34, 99, 108, 111, 117, 100, 115, 34, 58, 123, 34, 97, 108, 108, 34, 58, 55, 53, 125, 44, 34, 100, 116, 34, 58, 49, 54, 50, 49, 52, 57, 52, 55, 53, 50, 44, 34, 115, 121, 115, 34, 58, 123, 34, 116, 121, 112, 101, 34, 58, 49, 44, 34, 105, 100, 34, 58, 55, 56, 55, 55, 44, 34, 99, 111, 117, 110, 116, 114, 121, 34, 58, 34, 85, 83, 34, 44, 34, 115, 117, 110, 114, 105, 115, 101, 34, 58, 49, 54, 50, 49, 52, 51, 57, 52, 56, 49, 44, 34, 115, 117, 110, 115, 101, 116, 34, 58, 49, 54, 50, 49, 52, 56, 55, 48, 54, 49, 125, 44, 34, 116, 105, 109, 101, 122, 111, 110, 101, 34, 58, 45, 51, 54, 48, 48, 48, 44, 34, 105, 100, 34, 58, 53, 56, 52, 56, 49, 56, 57, 44, 34, 110, 97, 109, 101, 34, 58, 34, 75, 97, 110, 101, 111, 104, 101, 34, 44, 34, 99, 111, 100, 34, 58, 50, 48, 48, 125}
 
 func TestWeatherGet(t *testing.T) {
 	t.Parallel()
-	apiKey, err := weather.GetWeatherAPIKey("WEATHERAPI")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	tempUnit := "imperial"
-
-	client, err := weather.NewClient(apiKey, tempUnit)
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	apiKey := "dummy"
+	tempUnits := "imperial"
 	location := "Kaneohe"
-	url1 := client.Base + location + client.Units + client.ApiKey
-	url2 := client.Base + location + client.ApiKey
 
-	// need to to table test to handle both url types
-	want := weather.Weather{
-		Main:        "Clouds",
-		Description: "scattered clouds",
-		Temp:        76.32,
-		City:        "Kaneohe",
+	ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		f, err := os.Open("testdata/weather_test.json")
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer f.Close()
+		w.WriteHeader(http.StatusOK)
+		io.Copy(w, f)
+
+	}))
+
+	client, err := weather.NewClient(apiKey, tempUnits)
+	if err != nil {
+		t.Fatal(err)
 	}
+	client.Base = ts.URL
 
-	httpmock.Activate()
-	defer httpmock.DeactivateAndReset()
-
-	httpmock.RegisterResponder("GET", url1, httpmock.NewBytesResponder(http.StatusOK, response1))
-	httpmock.RegisterResponder("GET", url2, httpmock.NewBytesResponder(http.StatusOK, response2))
-
+	//fake client
+	client.HTTPClient = ts.Client()
 	got, err := client.Get(location)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if !cmp.Equal(want, got, cmpopts.IgnoreUnexported(weather.WeatherResponse{})) {
+	want := weather.Weather{
+		Main:        "Clouds",
+		Description: "broken clouds",
+		Temp:        74.12,
+		City:        "Kaneohe",
+	}
+
+	if !cmp.Equal(want, got) {
 		t.Error(cmp.Diff(want, got))
 	}
 
@@ -71,17 +66,70 @@ func TestGetWeatherAPIKey(t *testing.T) {
 
 func TestNewClient(t *testing.T) {
 	t.Parallel()
-	apiKey, err := weather.GetWeatherAPIKey("WEATHERAPI")
+	apiKey := "dummy"
+
+	tempUnits := "imperial"
+
+	got, err := weather.NewClient(apiKey, tempUnits)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	tempUnits := "imperial"
+	//want api key and temp units
+	want := weather.Client{
+		Base:       "https://api.openweathermap.org",
+		ApiKey:     apiKey,
+		Units:      tempUnits,
+		HTTPClient: &http.Client{Timeout: 10 * time.Second},
+	}
 
+	if !cmp.Equal(want, got) {
+		t.Error(cmp.Diff(want, got))
+	}
+
+}
+
+func TestFormatURL(t *testing.T) {
+	t.Parallel()
+
+	apiKey := "dummy"
+	tempUnits := "imperial"
+	location := "Kaneohe"
 	client, err := weather.NewClient(apiKey, tempUnits)
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Println(client)
+
+	want := "https://api.openweathermap.org/data/2.5/weather?q=Kaneohe&units=imperial&appid=dummy"
+	got := client.FormatURL(location)
+
+	if !cmp.Equal(want, got) {
+		t.Error(cmp.Diff(want, got))
+	}
+
+}
+
+func TestUnmarshallJson(t *testing.T) {
+	t.Parallel()
+	f, err := os.Open("testdata/weather_test.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	got, err := weather.ParseResponse(f)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := weather.Weather{
+		Main:        "Clouds",
+		Description: "broken clouds",
+		Temp:        74.12,
+		City:        "Kaneohe",
+	}
+
+	if !cmp.Equal(want, got) {
+		t.Error(cmp.Diff(want, got))
+	}
 
 }

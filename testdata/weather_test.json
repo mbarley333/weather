@@ -1,0 +1,43 @@
+{
+    "coord": {
+        "lon": -157.8036,
+        "lat": 21.4181
+    },
+    "weather": [
+        {
+            "id": 803,
+            "main": "Clouds",
+            "description": "broken clouds",
+            "icon": "04d"
+        }
+    ],
+    "base": "stations",
+    "main": {
+        "temp": 74.12,
+        "feels_like": 75.04,
+        "temp_min": 68.81,
+        "temp_max": 76.75,
+        "pressure": 1019,
+        "humidity": 81
+    },
+    "visibility": 10000,
+    "wind": {
+        "speed": 6.91,
+        "deg": 110
+    },
+    "clouds": {
+        "all": 75
+    },
+    "dt": 1622566094,
+    "sys": {
+        "type": 1,
+        "id": 7877,
+        "country": "US",
+        "sunrise": 1622562520,
+        "sunset": 1622610597
+    },
+    "timezone": -36000,
+    "id": 5848189,
+    "name": "Kaneohe",
+    "cod": 200
+}

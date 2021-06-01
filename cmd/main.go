@@ -13,7 +13,7 @@ func main() {
 	locationPtr := flag.String("location", "Kaneohe", "location name for weather (e.g. Kaneohe")
 
 	//could be friendlier unit names
-	tempUnitsPtr := flag.String("units", "imperial", "temparature units of measurement")
+	tempUnitsPtr := flag.String("units", "imperial", "temparature units of measurement (imperial, metric, standard)")
 
 	flag.Parse()
 	apiKey, err := weather.GetWeatherAPIKey("WEATHERAPI")
