@@ -12,7 +12,7 @@ To learn and become more familiar with the following aspects of the Go language:
 * testing
 * functions and methods
 * structs
-* HTTP clients
+* HTTP Client
 * writing clear code
 
 ## Future enhancements
