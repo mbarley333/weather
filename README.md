@@ -9,7 +9,7 @@ A simple command line utility to query the OpenWeatherMap Current Weather Data A
 
 ## Usage
 * Prior to use, install [Golang](https://golang.org/doc/install)
-* Create an account on [Open Weather Map](https://home.openweathermap.org/users/sign_up) and sign up for an [API key]((https://home.openweathermap.org/api_keys))
+* Create an account on [Open Weather Map](https://home.openweathermap.org/users/sign_up) and sign up for an [API key](https://home.openweathermap.org/api_keys)
 * Create an environment variable for your Open Weather Map API key: `export WEATHERAPI=YourOpenWeatherMapAPIKey`
 * Clone weather repo to local machine and change to that directory
 * Build weather client: go build -o weather ./cmd/main.go
