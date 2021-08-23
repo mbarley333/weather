@@ -24,10 +24,5 @@ To learn and become more familiar with the following aspects of the Go language:
 * HTTP Client
 * writing clear code
 
-## Future enhancements
-* output in human friendly format (e.g. Your current weather is clear skies, wind at 10 mph and a tempurature of 78.0 ºF)
-* add more data elements to output
-* use weather client data as part of a UI project
-* use weather client as part of a HTTP server project that uses concurrency
 
 
