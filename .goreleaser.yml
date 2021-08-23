@@ -14,7 +14,7 @@ builds:
       - linux
       - windows
       - darwin
-
+    id: weather-client
     main: ./cmd/main.go
 archives:
   - replacements:
