@@ -87,7 +87,7 @@ func NewClient(apiKey string, tempunits string) (Client, error) {
 }
 
 // GetWeatherAPIKey takes env as name of environmental variable
-// which holds the API key
+// which holds the API key 
 func GetWeatherAPIKey(env string) (string, error) {
 
 	apikey := os.Getenv(env)
