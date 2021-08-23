@@ -6,17 +6,16 @@ before:
     - go mod tidy
     # you may remove this if you don't need go generate
     # - go generate ./...
-build:
-  main: ./cmd/main.go
+
 builds:
-
-
   - env:
       - CGO_ENABLED=0
     goos:
       - linux
       - windows
       - darwin
+build:
+  main: ./cmd/main.go
 archives:
   - replacements:
       darwin: Darwin
