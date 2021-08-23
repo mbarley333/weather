@@ -14,8 +14,8 @@ builds:
       - linux
       - windows
       - darwin
-build:
-  main: ./cmd/main.go
+
+    main: ./cmd/main.go
 archives:
   - replacements:
       darwin: Darwin
