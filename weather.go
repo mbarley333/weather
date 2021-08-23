@@ -68,7 +68,7 @@ func (c Client) Get(location string) (Weather, error) {
 // NewClient takes apiKey and tempunits populates the Client struct
 // with a base url, temperature units, apikey AND sets up the
 // HTTPClient with timeout settings since default timeout is too long.
-// Returns Client struct and error
+// Returns Client struct and error.
 func NewClient(apiKey string, tempunits string) (Client, error) {
 
 	var c Client
@@ -108,7 +108,7 @@ func (c Client) FormatURL(location string) string {
 
 // ParseReponse takes an io.Reader and decodes into WeatherReponse struct
 // The WeatherResonse struct in then used to setup the Weather struct for
-// human reading
+// human reading.
 func ParseResponse(r io.Reader) (Weather, error) {
 
 	var result WeatherResponse
