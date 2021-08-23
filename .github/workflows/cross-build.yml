@@ -20,6 +20,6 @@ jobs:
         with:
             platforms: 'linux/amd64, darwin/amd64, windows/amd64'
             package: 'weather'
-            name: 'weather'
+            name: 'package'
             compress: 'true'
             dest: 'dist'
