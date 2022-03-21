@@ -87,7 +87,7 @@ func NewClient(apiKey string, tempunits string) (Client, error) {
 }
 
 // GetWeatherAPIKey takes env as name of environmental variable
-// which holds the API key 
+// which holds the API key
 func GetWeatherAPIKey(env string) (string, error) {
 
 	apikey := os.Getenv(env)
@@ -106,7 +106,7 @@ func (c Client) FormatURL(location string) string {
 
 }
 
-// ParseReponse takes an io.Reader and decodes into WeatherReponse struct
+// ParseResponse takes an io.Reader and decodes into WeatherReponse struct
 // The WeatherResonse struct in then used to setup the Weather struct for
 // human reading.
 func ParseResponse(r io.Reader) (Weather, error) {
