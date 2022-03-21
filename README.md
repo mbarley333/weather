@@ -39,10 +39,10 @@ To learn and become more familiar with the following aspects of the Go language:
 
 
 ## Tests
-* TestFormatURL: Given a set of input parameters, can the FormatURL method correctly put together url string
+* TestFormatURL: Given a set of input parameters, can the FormatURL method correctly put together a url string
 * TestGetWeather: Given a test web sever w/ data, can the Get method correctly return a Weather struct with the fields populated
 * TestNewClient: Given a set of input parameters, can the NewClient func correctly return a Client struct with the fields populated
-* TestUnmarshallJson: Given an io.Reader, can the ParseResponse func correctly decode json to a WeatherResponse struct
+* TestUnmarshallJson: Given an io.Reader, can the ParseResponse func correctly decode json to a Weather struct
 
 
 ## Structs and Methods
